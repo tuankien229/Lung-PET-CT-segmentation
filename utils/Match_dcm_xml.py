@@ -1,9 +1,14 @@
+#%%
 import pydicom as pydcm
 import torchio as tio
 import pandas as pd
 import glob
 import os
 from bs4 import BeautifulSoup
+import matplotlib.pyplot as plt
+import cv2
+import numpy as np
+
 
 def get_tumor_box(xml_path: str, normalize = False):
     '''
@@ -40,7 +45,7 @@ def get_tumor_box(xml_path: str, normalize = False):
     tumor_box = [xmin, xmax, ymin, ymax]
     return tumor_box
 
-
+#%%
 df = pd.read_csv('D:\Spyder\Final_Project\LUNG-PET\PET-CT-merged.csv')
 for i in range(len(df)):
     folder_path = df['folder_location'][i]
@@ -53,9 +58,14 @@ for i in range(len(df)):
                     xml_file_match = str(ds.SOPInstanceUID)
                     xml_files = glob.glob(xml_path + '/' + xml_file_match + '*')
                     if len(xml_files) != 0:
-                        print(get_tumor_box(glob.glob(xml_path + '/' + xml_file_match + '*')))
+                        xmin, xmax, ymin, ymax = get_tumor_box(glob.glob(xml_path + '/' + xml_file_match + '*'))
+                        pixel_data = np.array(ds.pixel_array, np.int16)
+                        pixel_tumor = cv2.cvtColor(pixel_data[int(ymin):int(ymax), int(xmin):int(xmax)], cv2.COLOR_BGR2GRAY)
+            
                         
                         
 
     break
 
+
+# %%
