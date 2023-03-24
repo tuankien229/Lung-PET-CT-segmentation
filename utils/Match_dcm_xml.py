@@ -55,6 +55,7 @@ for i in range(len(df)):
                     if len(xml_files) != 0:
                         print(get_tumor_box(glob.glob(xml_path + '/' + xml_file_match + '*')))
                         
+                        
 
     break
 
